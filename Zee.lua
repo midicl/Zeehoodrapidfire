@@ -28,21 +28,14 @@ UserInputService.InputEnded:Connect(function(i)
     end
 end)
 
--- Fire 10x every Heartbeat while M1 held
+-- Fire every Heartbeat while M1 held — no closure allocations, zero GC pressure
 RunService.Heartbeat:Connect(function()
     if not rf_firing then return end
     local g = getGun()
     if not g then return end
-    pcall(function() g:Activate() end)
-    pcall(function() g:Activate() end)
-    pcall(function() g:Activate() end)
-    pcall(function() g:Activate() end)
-    pcall(function() g:Activate() end)
-    pcall(function() g:Activate() end)
-    pcall(function() g:Activate() end)
-    pcall(function() g:Activate() end)
-    pcall(function() g:Activate() end)
-    pcall(function() g:Activate() end)
+    pcall(g.Activate, g)
+    pcall(g.Activate, g)
+    pcall(g.Activate, g)
 end)
 
 -- ─── Auto Reload ──────────────────────────────────────────────────────────────
