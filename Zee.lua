@@ -4,8 +4,9 @@ local RunService       = game:GetService("RunService")
 local Camera           = workspace.CurrentCamera
 local LP               = Players.LocalPlayer
 
-print("[Zee] Rapid Fire active — Solara max speed")
+print("[Zee] Rapid Fire + Auto Reload active — Solara max speed")
 
+-- ─── Rapid Fire ───────────────────────────────────────────────────────────────
 local rf_firing = false
 
 local function getGun()
@@ -27,7 +28,7 @@ UserInputService.InputEnded:Connect(function(i)
     end
 end)
 
--- Fire 5x every Heartbeat while M1 held — much faster than once per frame
+-- Fire 10x every Heartbeat while M1 held
 RunService.Heartbeat:Connect(function()
     if not rf_firing then return end
     local g = getGun()
@@ -37,9 +38,31 @@ RunService.Heartbeat:Connect(function()
     pcall(function() g:Activate() end)
     pcall(function() g:Activate() end)
     pcall(function() g:Activate() end)
+    pcall(function() g:Activate() end)
+    pcall(function() g:Activate() end)
+    pcall(function() g:Activate() end)
+    pcall(function() g:Activate() end)
+    pcall(function() g:Activate() end)
 end)
 
--- Rainbow "Enabled" label at bottom center
+-- ─── Auto Reload ──────────────────────────────────────────────────────────────
+local ar_cooldown = 0
+
+RunService.Heartbeat:Connect(function(dt)
+    ar_cooldown = math.max(0, ar_cooldown - dt)
+    local char = LP.Character
+    local tool = char and char:FindFirstChildOfClass("Tool")
+    if tool then
+        local ammo = tool:FindFirstChild("Ammo")
+        if ammo and ammo.Value <= 0 and ar_cooldown <= 0 then
+            ar_cooldown = 1.5
+            pcall(function() keypress(0x52) end)
+            task.delay(0.07, function() pcall(function() keyrelease(0x52) end) end)
+        end
+    end
+end)
+
+-- ─── Rainbow "Enabled" label at bottom center ─────────────────────────────────
 local label        = Drawing.new("Text")
 label.Text         = "Enabled"
 label.Size         = 20
