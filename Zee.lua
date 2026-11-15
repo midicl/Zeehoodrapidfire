@@ -15,17 +15,18 @@ local function getGun()
     return char:FindFirstChildOfClass("Tool")
 end
 
+local function isFireInput(i)
+    return i.UserInputType == Enum.UserInputType.MouseButton1
+        or i.KeyCode == Enum.KeyCode.ButtonR2
+end
+
 UserInputService.InputBegan:Connect(function(i, gp)
     if gp then return end
-    if i.UserInputType == Enum.UserInputType.MouseButton1 then
-        rf_firing = true
-    end
+    if isFireInput(i) then rf_firing = true end
 end)
 
 UserInputService.InputEnded:Connect(function(i)
-    if i.UserInputType == Enum.UserInputType.MouseButton1 then
-        rf_firing = false
-    end
+    if isFireInput(i) then rf_firing = false end
 end)
 
 -- Fire every Heartbeat while M1 held — no closure allocations, zero GC pressure
