@@ -43,6 +43,12 @@ local hue = 0
 RunService.Heartbeat:Connect(function(dt)
     local char = LP.Character
     local tool = char and char:FindFirstChildOfClass("Tool")
+    local hum  = char and char:FindFirstChildOfClass("Humanoid")
+
+    -- No slow: reset WalkSpeed every frame so Da Hood can't reduce it on hit
+    if hum then
+        hum.WalkSpeed = 16
+    end
 
     -- Rapid fire (throttled)
     if rf_firing and tool then
