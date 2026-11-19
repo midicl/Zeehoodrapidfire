@@ -45,9 +45,21 @@ RunService.Heartbeat:Connect(function(dt)
     local tool = char and char:FindFirstChildOfClass("Tool")
     local hum  = char and char:FindFirstChildOfClass("Humanoid")
 
-    -- No slow: reset WalkSpeed every frame so Da Hood can't reduce it on hit
-    if hum then
-        hum.WalkSpeed = 16
+    -- No slow: destroy Da Hood's movement-debuff instances every frame
+    if char then
+        local be = char:FindFirstChild("BodyEffects")
+        local mv = be and be:FindFirstChild("Movement")
+        if mv then
+            pcall(function()
+                local nw = mv:FindFirstChild("NoWalkSpeed"); if nw then nw:Destroy() end
+                local rw = mv:FindFirstChild("ReduceWalk");  if rw then rw:Destroy() end
+                local nj = mv:FindFirstChild("NoJumping");   if nj then nj:Destroy() end
+            end)
+        end
+        local rel = be and be:FindFirstChild("Reload")
+        if rel and rel.Value == true then
+            pcall(function() rel.Value = false end)
+        end
     end
 
     -- Rapid fire (throttled)
