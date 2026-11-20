@@ -29,15 +29,17 @@ end)
 local ar_cooldown = 0
 
 -- ─── Rainbow label ────────────────────────────────────────────────────────────
-local label        = Drawing.new("Text")
-label.Text         = "Enabled"
-label.Size         = 20
-label.Center       = true
-label.Outline      = true
-label.OutlineColor = Color3.new(0, 0, 0)
-label.Font         = (Drawing.Fonts and Drawing.Fonts.UI) or 0
-label.Visible      = true
-local hue = 0
+local label, hue = nil, 0
+pcall(function()
+    label            = Drawing.new("Text")
+    label.Text         = "Enabled"
+    label.Size         = 20
+    label.Center       = true
+    label.Outline      = true
+    label.OutlineColor = Color3.new(0, 0, 0)
+    label.Font         = (Drawing.Fonts and Drawing.Fonts.UI) or 0
+    label.Visible      = true
+end)
 
 -- ─── Single merged Heartbeat ─────────────────────────────────────────────────
 RunService.Heartbeat:Connect(function(dt)
@@ -84,9 +86,10 @@ RunService.Heartbeat:Connect(function(dt)
     end
 
     -- Rainbow label
-    hue = (hue + dt * 0.8) % 1
-    label.Color    = Color3.fromHSV(hue, 1, 1)
-    local vp       = Camera.ViewportSize
-    label.Position = Vector2.new(vp.X * 0.5, vp.Y - 36)
+    if label then
+        hue = (hue + dt * 0.8) % 1
+        label.Color    = Color3.fromHSV(hue, 1, 1)
+        local vp       = Camera.ViewportSize
+        label.Position = Vector2.new(vp.X * 0.5, vp.Y - 36)
+    end
 end)
-s
