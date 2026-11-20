@@ -43,23 +43,22 @@ local hue = 0
 RunService.Heartbeat:Connect(function(dt)
     local char = LP.Character
     local tool = char and char:FindFirstChildOfClass("Tool")
-    local hum  = char and char:FindFirstChildOfClass("Humanoid")
 
-    -- No slow: destroy Da Hood's movement-debuff instances every frame
-    if char then
-        local be = char:FindFirstChild("BodyEffects")
-        local mv = be and be:FindFirstChild("Movement")
-        if mv then
-            pcall(function()
-                local nw = mv:FindFirstChild("NoWalkSpeed"); if nw then nw:Destroy() end
-                local rw = mv:FindFirstChild("ReduceWalk");  if rw then rw:Destroy() end
-                local nj = mv:FindFirstChild("NoJumping");   if nj then nj:Destroy() end
-            end)
-        end
-        local rel = be and be:FindFirstChild("Reload")
-        if rel and rel.Value == true then
-            pcall(function() rel.Value = false end)
-        end
+
+    -- No shoot delay: zero out the gun's client-side fire cooldown every frame
+    if tool then
+        pcall(function()
+            local gs = tool:FindFirstChild("GunScript") or tool:FindFirstChild("LocalGunScript")
+            for _, v in ipairs(tool:GetChildren()) do
+                if v:IsA("NumberValue") and (
+                    v.Name == "ShootDelay"  or v.Name == "FireDelay" or
+                    v.Name == "Cooldown"    or v.Name == "RateOfFire" or
+                    v.Name == "FireRate"    or v.Name == "Delay"
+                ) then
+                    v.Value = 0
+                end
+            end
+        end)
     end
 
     -- Rapid fire (throttled)
@@ -90,3 +89,4 @@ RunService.Heartbeat:Connect(function(dt)
     local vp       = Camera.ViewportSize
     label.Position = Vector2.new(vp.X * 0.5, vp.Y - 36)
 end)
+s
